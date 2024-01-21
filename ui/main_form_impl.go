@@ -50,6 +50,36 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.DiskWrite = f.InitLabelOnRight(f.DiskWriteText, "1024Kb/s")
 	f.DiskWrite.Font().SetColor(colors.ClGreen)
 
+	f.Process = vcl.NewTabSheet(f)
+	f.Process.SetParent(f.UIPage)
+	f.Process.SetCaption("进程列表")
+
+	f.ProcessList = vcl.NewListView(f)
+	f.ProcessList.SetParent(f.Process)
+	f.ProcessList.SetViewStyle(types.VsReport)
+	f.ProcessList.SetBorderStyle(types.BsSingle)
+	f.ProcessList.SetReadOnly(true)
+	f.ProcessList.SetRowSelect(true)
+	//f.WinList.SetMultiSelect(false)
+	f.ProcessList.SetColor(colors.ClAzure)
+	f.ProcessList.SetAlign(types.AlNone)
+	f.ProcessList.SetWidth(300)
+	f.ProcessList.SetHeight(250)
+	addColV2(f.ProcessList, []Item{NewItem("PID", 40), NewItem("进程名", 250)})
+
+	f.Kill = vcl.NewButton(f)
+	f.Kill.SetParent(f.Process)
+	f.Kill.SetTop(f.ProcessList.Top() + f.ProcessList.Height())
+	f.Kill.SetLeft(f.ProcessList.Left())
+	f.Kill.SetWidth(f.UIPage.Width()/2 - 5)
+	f.Kill.SetCaption("终止该程序启动")
+
+	f.LimitNetwork = vcl.NewButton(f)
+	f.LimitNetwork.SetParent(f.Process)
+	f.LimitNetwork.SetTop(f.ProcessList.Top() + f.ProcessList.Height())
+	f.LimitNetwork.SetLeft(f.Kill.Left() + f.Kill.Width() + 1)
+	f.LimitNetwork.SetWidth(f.UIPage.Width()/2 - 5)
+	f.LimitNetwork.SetCaption("禁止该程序联网")
 }
 
 func (f *TMainForm) InitLabel(text string, top, left int32) *vcl.TLabel {
