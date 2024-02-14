@@ -1,9 +1,11 @@
 package ui
 
 import (
+	"github.com/buhuang28/mini-tool/per"
 	"github.com/ying32/govcl/vcl"
 	"github.com/ying32/govcl/vcl/types"
 	"github.com/ying32/govcl/vcl/types/colors"
+	"time"
 )
 
 func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
@@ -80,6 +82,19 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.LimitNetwork.SetLeft(f.Kill.Left() + f.Kill.Width() + 1)
 	f.LimitNetwork.SetWidth(f.UIPage.Width()/2 - 5)
 	f.LimitNetwork.SetCaption("禁止该程序联网")
+
+	go func() {
+		for {
+			select {
+			case <-time.After(time.Second * 1):
+				cpuUsedRate := per.GetCpuUsedRate() + "%"
+				vcl.ThreadSync(func() {
+					f.Cpu.SetCaption(cpuUsedRate)
+				})
+			}
+		}
+	}()
+
 }
 
 func (f *TMainForm) InitLabel(text string, top, left int32) *vcl.TLabel {
