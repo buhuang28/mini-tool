@@ -89,9 +89,12 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 			case <-time.After(time.Second * 1):
 				cpuUsedRate := per.GetCpuUsedRate() + "%"
 				memUsedRate := per.GetMemUsedRate() + "%"
+				netSpeed := per.GetNetworkSpeed()
 				vcl.ThreadSync(func() {
 					f.Cpu.SetCaption(cpuUsedRate)
 					f.Mem.SetCaption(memUsedRate)
+					f.NetRecv.SetCaption(netSpeed.RecvSpeed)
+					f.NetSend.SetCaption(netSpeed.SendSpeed)
 				})
 			}
 		}
