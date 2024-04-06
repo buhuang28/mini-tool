@@ -90,12 +90,22 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 				cpuUsedRate := per.GetCpuUsedRate() + "%"
 				memUsedRate := per.GetMemUsedRate() + "%"
 				netSpeed := per.GetNetworkSpeed()
-				diskSpeed := per.GetDiskWRSpeed()
 				vcl.ThreadSync(func() {
 					f.Cpu.SetCaption(cpuUsedRate)
 					f.Mem.SetCaption(memUsedRate)
 					f.NetRecv.SetCaption(netSpeed.RecvSpeed)
 					f.NetSend.SetCaption(netSpeed.SendSpeed)
+				})
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-time.After(time.Second * 1):
+				diskSpeed := per.GetDiskWRSpeed()
+				vcl.ThreadSync(func() {
 					f.DiskRead.SetCaption(diskSpeed.ReadSpeed)
 					f.DiskWrite.SetCaption(diskSpeed.WriteSpeed)
 				})

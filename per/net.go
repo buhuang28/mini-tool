@@ -3,6 +3,8 @@ package per
 import (
 	"fmt"
 	"github.com/StackExchange/wmi"
+	"github.com/buhuang28/mini-tool/cst"
+	log "github.com/sirupsen/logrus"
 )
 
 type Win32_PerfFormattedData_Tcpip_NetworkInterface struct {
@@ -25,7 +27,11 @@ func GetNetworkSpeed() NetworkSpeed {
 	var d []Win32_PerfFormattedData_Tcpip_NetworkInterface
 	err := wmi.Query(q, &d)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		return NetworkSpeed{
+			RecvSpeed: cst.ERROR,
+			SendSpeed: cst.ERROR,
+		}
 	}
 
 	var recv, send uint32
@@ -33,7 +39,6 @@ func GetNetworkSpeed() NetworkSpeed {
 	for _, v := range d {
 		recv += v.BytesReceivedPerSec
 		send += v.BytesSentPerSec
-		//fmt.Println(fmt.Sprintf("interface name:%s,recv:%d,send:%d", v.Name, v.BytesReceivedPerSec, v.BytesSentPerSec))
 	}
 
 	recvKbs := recv / 1024
