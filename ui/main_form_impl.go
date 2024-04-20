@@ -67,6 +67,7 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.ProcessList.SetAlign(types.AlNone)
 	f.ProcessList.SetWidth(300)
 	f.ProcessList.SetHeight(250)
+
 	addColV2(f.ProcessList, []Item{NewItem("PID", 40), NewItem("进程名", 250)})
 
 	f.Kill = vcl.NewButton(f)
@@ -93,6 +94,19 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 				vcl.ThreadSync(func() {
 					f.Cpu.SetCaption(cpuUsedRate)
 					f.Mem.SetCaption(memUsedRate)
+					f.NetRecv.SetCaption(netSpeed.RecvSpeed)
+					f.NetSend.SetCaption(netSpeed.SendSpeed)
+				})
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-time.After(time.Second * 1):
+				netSpeed := per.GetNetworkSpeed()
+				vcl.ThreadSync(func() {
 					f.NetRecv.SetCaption(netSpeed.RecvSpeed)
 					f.NetSend.SetCaption(netSpeed.SendSpeed)
 				})
