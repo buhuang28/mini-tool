@@ -23,12 +23,11 @@ func GetProcess() []Process {
 	for _, p := range processes {
 		name, err := p.Name()
 		if err != nil {
-			log.Error(err)
 			continue
 		}
 		exe, err := p.Exe()
 		if err != nil {
-			log.Error(err)
+			//log.Error(err)
 			continue
 		}
 		pid := p.Pid

@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/buhuang28/mini-tool/per"
 	"github.com/ying32/govcl/vcl"
 	"github.com/ying32/govcl/vcl/types"
@@ -68,7 +69,7 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.ProcessList.SetWidth(300)
 	f.ProcessList.SetHeight(250)
 
-	addColV2(f.ProcessList, []Item{NewItem("PID", 40), NewItem("进程名", 250)})
+	addColV2(f.ProcessList, []Item{NewItem("PID", 60), NewItem("进程名", 240)})
 
 	f.Kill = vcl.NewButton(f)
 	f.Kill.SetParent(f.Process)
@@ -83,6 +84,22 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.LimitNetwork.SetLeft(f.Kill.Left() + f.Kill.Width() + 1)
 	f.LimitNetwork.SetWidth(f.UIPage.Width()/2 - 5)
 	f.LimitNetwork.SetCaption("禁止该程序联网")
+
+	go func() {
+		for {
+			select {
+			case <-time.After(time.Second * 3):
+				process := per.GetProcess()
+				vcl.ThreadSync(func() {
+					for _, v := range process {
+						item := f.ProcessList.Items().Add()
+						item.SubItems().Add(fmt.Sprintf("%d", v.Pid))
+						item.SubItems().Add(v.Name)
+					}
+				})
+			}
+		}
+	}()
 
 	go func() {
 		for {
