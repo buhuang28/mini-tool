@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"github.com/buhuang28/mini-tool/config"
 	"github.com/buhuang28/mini-tool/per"
 	"github.com/ying32/govcl/vcl"
 	"github.com/ying32/govcl/vcl/types"
@@ -77,6 +78,18 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.Kill.SetLeft(f.ProcessList.Left())
 	f.Kill.SetWidth(f.UIPage.Width()/2 - 5)
 	f.Kill.SetCaption("终止该程序启动")
+	f.Kill.SetOnClick(func(sender vcl.IObject) {
+		selected := f.ProcessList.Selected()
+		name := selected.SubItems().Strings(1)
+		//go per.KillProcess(name)
+		//vcl.ShowMessage()
+		err := config.AddKillName(name)
+		if err != nil {
+			vcl.ShowMessage(err.Error())
+		} else {
+			vcl.ShowMessage("success")
+		}
+	})
 
 	f.LimitNetwork = vcl.NewButton(f)
 	f.LimitNetwork.SetParent(f.Process)
@@ -92,6 +105,7 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 				process := per.GetProcess()
 				vcl.ThreadSync(func() {
 					for _, v := range process {
+						f.ProcessList.Clear()
 						item := f.ProcessList.Items().Add()
 						item.SubItems().Add(fmt.Sprintf("%d", v.Pid))
 						item.SubItems().Add(v.Name)
