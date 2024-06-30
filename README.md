@@ -6,3 +6,6 @@
 
 
 ### Require Golang Version : >= 1.16
+
+### Build:
+    ./build.bat
