@@ -53,28 +53,28 @@ func GetDiskWRSpeed() DiskRWSpeed {
 	for _, v := range counters {
 		readBytes += v.ReadBytes
 		writeBytes += v.WriteBytes
-		//readBytes = v.ReadBytes-readBytes
-		//writeBytes = v.WriteBytes - writeBytes
 	}
 
-	writeBytes = writeBytes - LastWriteBytes
-	readBytes = readBytes - LastReadBytes
+	difWriteBytes := writeBytes - LastWriteBytes
+	difReadBytes := readBytes - LastReadBytes
+	LastWriteBytes = writeBytes
+	LastReadBytes = readBytes
 
 	readSpeed, writeSpeed := "", ""
 
-	readBytes = readBytes / 1024
-	writeBytes = writeBytes / 1024
+	difReadBytes = difReadBytes / 1024
+	difWriteBytes = difWriteBytes / 1024
 
-	if readBytes > 1024 {
-		readSpeed = fmt.Sprintf("%.2fMb/s", float64(readBytes/1024))
+	if difReadBytes > 1024 {
+		readSpeed = fmt.Sprintf("%.2fMb/s", float64(difReadBytes/1024))
 	} else {
-		readSpeed = fmt.Sprintf("%dKb/s", readBytes)
+		readSpeed = fmt.Sprintf("%dKb/s", difReadBytes)
 	}
 
-	if writeBytes > 1024 {
-		writeSpeed = fmt.Sprintf("%.2fMb/s", float64(writeBytes/1024))
+	if difWriteBytes > 1024 {
+		writeSpeed = fmt.Sprintf("%.2fMb/s", float64(difWriteBytes/1024))
 	} else {
-		writeSpeed = fmt.Sprintf("%dKb/s", writeBytes)
+		writeSpeed = fmt.Sprintf("%dKb/s", difWriteBytes)
 	}
 	return DiskRWSpeed{
 		WriteSpeed: writeSpeed,

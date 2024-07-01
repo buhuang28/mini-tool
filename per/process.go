@@ -9,20 +9,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type Process struct {
-	Pid  int32
-	Name string
-	Path string
-}
-
-func GetProcess() []Process {
+func GetProcess() []config.Process {
 	processes, err := process.Processes()
 	if err != nil {
 		log.Error(err)
 		return nil
 	}
 
-	var processList []Process
+	var processList []config.Process
 
 	for _, p := range processes {
 		name, err := p.Name()
@@ -35,7 +29,7 @@ func GetProcess() []Process {
 			continue
 		}
 		pid := p.Pid
-		processList = append(processList, Process{
+		processList = append(processList, config.Process{
 			Pid:  pid,
 			Name: name,
 			Path: exe,
@@ -71,6 +65,7 @@ func KillProcess() {
 
 		for _, v2 := range c.KillName {
 			if processName == v2 {
+				log.Infof("kill process:%s", v2)
 				err = v.Kill()
 				if err != nil {
 					log.Error()

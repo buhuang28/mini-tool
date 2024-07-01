@@ -16,9 +16,11 @@ import (
 func init() {
 	logs.LogInit()
 	go func() {
-		select {
-		case <-time.After(time.Second * 3):
-			per.KillProcess()
+		for {
+			select {
+			case <-time.After(time.Second * 3):
+				per.KillProcess()
+			}
 		}
 	}()
 }

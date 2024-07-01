@@ -64,7 +64,6 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.ProcessList.SetBorderStyle(types.BsSingle)
 	f.ProcessList.SetReadOnly(true)
 	f.ProcessList.SetRowSelect(true)
-	//f.WinList.SetMultiSelect(false)
 	f.ProcessList.SetColor(colors.ClAzure)
 	f.ProcessList.SetAlign(types.AlNone)
 	f.ProcessList.SetWidth(300)
@@ -97,6 +96,15 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 	f.LimitNetwork.SetLeft(f.Kill.Left() + f.Kill.Width() + 1)
 	f.LimitNetwork.SetWidth(f.UIPage.Width()/2 - 5)
 	f.LimitNetwork.SetCaption("禁止该程序联网")
+	f.SetOnClick(func(sender vcl.IObject) {
+		//item := f.ProcessList.Selected()
+		//if item == nil {
+		//	vcl.ShowMessage("请先选中进行")
+		//	return
+		//}
+		//name := item.SubItems().Strings(1)
+		//per.BanProcessNetwork(name)
+	})
 
 	go func() {
 		for {
@@ -104,8 +112,8 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 			case <-time.After(time.Second * 3):
 				process := per.GetProcess()
 				vcl.ThreadSync(func() {
+					f.ProcessList.Clear()
 					for _, v := range process {
-						f.ProcessList.Clear()
 						item := f.ProcessList.Items().Add()
 						item.SubItems().Add(fmt.Sprintf("%d", v.Pid))
 						item.SubItems().Add(v.Name)
@@ -157,7 +165,6 @@ func (f *TMainForm) OnFormCreate(sender vcl.IObject) {
 			}
 		}
 	}()
-
 }
 
 func (f *TMainForm) InitLabel(text string, top, left int32) *vcl.TLabel {
